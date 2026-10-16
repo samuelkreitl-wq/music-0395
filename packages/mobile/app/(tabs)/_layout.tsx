@@ -1,40 +1,6 @@
-import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { useColors } from "@/hooks/use-colors";
-
-export default function TabLayout() {
-  const colors = useColors();
-
-  return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.mutedForeground,
-        tabBarStyle: {
-          backgroundColor: colors.background,
-          borderTopColor: colors.border,
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? "home" : "home-outline"} size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Explore",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? "compass" : "compass-outline"} size={size} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
-  );
-}
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { C } from '../../components/remote-ui';
+export default function TabLayout(){return <Tabs screenOptions={{headerShown:false,tabBarActiveTintColor:C.amber,tabBarInactiveTintColor:C.muted,tabBarStyle:{backgroundColor:C.card,borderTopColor:C.border},tabBarLabelStyle:{fontFamily:'Sora',fontSize:10}}}>
+{([['index','Connect','link'],['mixer','Mixer','options'],['clips','Clips','grid'],['play','Play','musical-notes'],['devices','Devices','hardware-chip'],['takes','Takes','mic']] as const).map(([name,title,icon])=><Tabs.Screen key={name} name={name} options={{title,tabBarIcon:({color,size})=><Ionicons name={icon} color={color} size={size}/>}}/>)}<Tabs.Screen name="explore" options={{href:null}}/>
+</Tabs>;}

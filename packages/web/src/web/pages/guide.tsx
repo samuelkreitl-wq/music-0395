@@ -32,7 +32,10 @@ export default function GuidePage() {
               </a>
             ))}
           </nav>
-          <span className="ml-auto font-mono text-[11px] text-muted-foreground hidden sm:block">
+          <a href="/alignment" className="ml-auto text-sm text-primary">Align vocals</a>
+          <a href="/companion" className=" text-sm text-muted-foreground hidden lg:block">Mac remote</a>
+          <a href="/sessions" className=" text-sm font-semibold text-primary whitespace-nowrap">My sessions</a>
+          <span className="font-mono text-[11px] text-muted-foreground hidden sm:block">
             ABLETON LIVE 12 · MAC
           </span>
         </div>

@@ -1,0 +1,21 @@
+import dgram from 'node:dgram';
+import { createRequire } from 'node:module';
+import { AbletonAdapter } from '../packages/desktop/electron/ableton';
+const require=createRequire(new URL('../packages/desktop/electron/main.ts',import.meta.url));
+const osc=require('osc');
+const server=dgram.createSocket('udp4');
+const received:string[]=[];
+server.on('message',(bytes)=>{
+ const m=osc.readPacket(bytes,{metadata:true});received.push(m.address);
+ const reply=m.address==='/live/song/get/tempo'?123:m.address==='/live/song/get/num_tracks'?1:m.address==='/live/song/get/is_playing'?1:0;
+ server.send(osc.writePacket({address:m.address,args:[{type:'i',value:reply}]},{metadata:true}),11001,'127.0.0.1');
+});
+await new Promise<void>(resolve=>server.bind(11000,'127.0.0.1',resolve));
+const adapter=new AbletonAdapter();
+await new Promise<void>(resolve=>setTimeout(resolve,300));
+if(adapter.snapshot.tempo!==123||!adapter.snapshot.live||adapter.snapshot.tracks.length!==1)throw new Error('Feedback mapping failed');
+adapter.command({kind:'track',track:0,field:'volume',value:.5});
+adapter.command({kind:'play'});
+await new Promise<void>(resolve=>setTimeout(resolve,100));
+if(!received.includes('/live/track/set/volume')||!received.includes('/live/song/start_playing'))throw new Error('Command OSC mapping failed');
+adapter.close();server.close();console.log('OSC fixture feedback and commands passed. Not a Live hardware test.');

@@ -1,6 +1,9 @@
 // System-managed layout — extend in place, never rewrite from scratch.
 // Keep the provider chain intact: ErrorBoundary → OneDollarStats → SafeArea → QueryClient.
-// To switch navigation, replace only the <Slot /> line with <Stack /> or <Tabs />.
+// To switch navigation, replace only the <RemoteProvider><Slot /></RemoteProvider> line with <Stack /> or <Tabs />.
+import { RemoteProvider } from "../lib/remote";
+import { useFonts } from "expo-font";
+import { Sora_400Regular, Sora_700Bold } from "@expo-google-fonts/sora";
 import { useEffect } from "react";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -17,10 +20,12 @@ const applicationId = appJson.expo.extra.applicationId ?? "";
 const hostname = applicationId ? `${applicationId}-mobile` : "localhost";
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({ Sora: Sora_400Regular, SoraBold: Sora_700Bold });
   useEffect(() => {
     if (isWeb) startWebSafeArea();
   }, []);
 
+  if (!fontsLoaded) return null;
   return (
     <ErrorBoundary>
       {/* Runable analytics provider — do not remove, required for analytics tracking */}
@@ -33,8 +38,8 @@ export default function RootLayout() {
       >
         <SafeAreaProvider>
           <QueryClientProvider client={queryClient}>
-            <StatusBar style="auto" />
-            <Slot />
+            <StatusBar style="light" />
+            <RemoteProvider><Slot /></RemoteProvider>
           </QueryClientProvider>
         </SafeAreaProvider>
       </OneDollarStatsProvider>

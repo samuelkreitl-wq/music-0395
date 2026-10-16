@@ -67,3 +67,31 @@ export const oauthStates = sqliteTable("oauth_states", {
     .notNull()
     .$defaultFn(() => new Date()),
 });
+
+/** An uploaded DAW session: a project from Ableton, Logic, BandLab or anywhere else. */
+export const sessions = sqliteTable("sessions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: text("user_id").notNull(),
+  title: text("title").notNull(),
+  /** ableton | logic | bandlab | other */
+  daw: text("daw").notNull(),
+  bpm: integer("bpm"),
+  musicalKey: text("musical_key"),
+  notes: text("notes"),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+/** Files belonging to a session, stored in object storage. */
+export const sessionFiles = sqliteTable("session_files", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  sessionId: integer("session_id").notNull(),
+  name: text("name").notNull(),
+  storageKey: text("storage_key").notNull(),
+  size: integer("size").notNull(),
+  contentType: text("content_type"),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});

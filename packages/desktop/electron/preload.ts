@@ -9,6 +9,9 @@ contextBridge.exposeInMainWorld("managedAuth", managedAuth);
 
 contextBridge.exposeInMainWorld("electronAPI", {
   platform: process.platform,
+  remoteStart: (input: {token: string; url: string}) => ipcRenderer.invoke("remote:start", input),
+  remoteStop: () => ipcRenderer.invoke("remote:stop"),
+  remoteStatus: () => ipcRenderer.invoke("remote:status"),
 
   // Dialog
   showOpenDialog: (opts: Electron.OpenDialogOptions) => ipcRenderer.invoke("dialog:open", opts),

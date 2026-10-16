@@ -4,6 +4,8 @@ import { ping } from "./routes/ping";
 import { releases } from "./routes/releases";
 import { promo } from "./routes/promo";
 import { soundcloud, completeConnect, uploadTrack } from "./routes/soundcloud";
+import { sessions } from "./routes/sessions";
+import { remote } from "./routes/remote";
 import { auth } from "./auth";
 
 // API features are oRPC procedures, one file per feature in ./routes/,
@@ -14,6 +16,8 @@ export const router = {
   releases,
   promo,
   soundcloud,
+  sessions,
+  remote,
 };
 
 export type AppRouter = typeof router;

@@ -1,6 +1,9 @@
 /** Type definition for the Electron preload API exposed via contextBridge */
 export interface ElectronAPI {
   platform: string;
+  remoteStart: (input: {token: string; url: string}) => Promise<unknown>;
+  remoteStop: () => Promise<unknown>;
+  remoteStatus: () => Promise<{running: boolean; live: boolean; midi: boolean; paired: boolean; error: string | null; version: string}>;
 
   // Dialog
   showOpenDialog: (opts: {

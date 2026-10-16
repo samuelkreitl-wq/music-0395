@@ -16,6 +16,8 @@
     "db:push": "bun --env-file=../../.env drizzle-kit push"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1146.0",
+    "@aws-sdk/s3-request-presigner": "^3.1146.0",
     "@better-auth/expo": "1.6.19",
     "@libsql/client": "^0.17.2",
     "@orpc/client": "^1.14.7",

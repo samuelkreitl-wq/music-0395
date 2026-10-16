@@ -2,6 +2,7 @@ import { app, BrowserWindow } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createManagedDeepLinks } from "@runablehq/managed-auth/desktop/main";
+import { registerRemoteBridge, stopRemoteBridge } from "./remote-bridge";
 import { registerIpcHandlers } from "./ipc";
 
 // Fully editable Electron main process — own the window, lifecycle, menus, tray,
@@ -36,13 +37,15 @@ function createWindow() {
   });
 
   if (isDev) {
-    win.loadURL(WEB_DEV_URL);
+    win.loadURL(`${WEB_DEV_URL.replace(/\/$/, "")}/companion`);
   } else {
     win.loadFile(path.join(WEB_DIST, "index.html"));
   }
 }
 
 registerIpcHandlers(getWindow);
+registerRemoteBridge();
+app.on("before-quit", stopRemoteBridge);
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

@@ -106,3 +106,18 @@ body { font-family: var(--font-sans); line-height: 1.6; -webkit-font-smoothing: 
   background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
   background-size: 3px 3px;
 }
+
+.session-label { display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #aaaab6; }
+.session-input { width: 100%; background: #0b0b0d; border: 1px solid #30303a; border-radius: 6px; padding: 12px 14px; color: #f5f3ef; font-family: inherit; font-size: 14px; outline: none; }
+.session-input:focus { border-color: #ff8a3d; box-shadow: 0 0 0 2px #ff8a3d18; }
+.session-input::placeholder { color: #646472; }
+.session-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 6px; background: #ff8a3d; padding: 11px 16px; color: #0b0b0d; font-size: 13px; font-weight: 600; cursor: pointer; }
+.session-button:hover { filter: brightness(1.1); }
+.session-button.secondary { background: #1c1c24; color: #f5f3ef; border-color: #30303a; }
+.session-button:disabled, .session-icon:disabled { opacity: .5; cursor: wait; }
+.session-icon { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 6px; color: #8a8a99; cursor: pointer; }
+.session-icon:hover { background: #1c1c24; color: #ff8a3d; }
+audio { color-scheme: dark; }
+@media (prefers-reduced-motion: reduce) { .rise { animation: none; opacity: 1; } .meter-bar { animation: none; } html { scroll-behavior: auto; } }
+
+.align-lane { padding: 22px 20px 14px; border-bottom: 1px solid var(--border); background-image: linear-gradient(to right, transparent calc(100% - 1px), #26263055 1px); background-size: 25% 100%; }

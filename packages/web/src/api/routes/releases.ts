@@ -90,6 +90,7 @@ export const releases = {
         })
         .returning();
 
+      if (!release) throw new ORPCError("INTERNAL_SERVER_ERROR");
       await db.insert(schema.releasePlatforms).values(
         PLATFORMS.map((platform) => ({
           releaseId: release.id,

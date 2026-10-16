@@ -2,7 +2,7 @@
   "expo": {
     "icon": "./assets/icon.png",
     "android": {
-      "package": "com.appId.runable",
+      "package": "com.songremote_r7f2.runable",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
@@ -15,7 +15,7 @@
       "runableAuthIssuer": "https://api.runable.com/api/auth"
     },
     "ios": {
-      "bundleIdentifier": "com.appId.runable",
+      "bundleIdentifier": "com.songremote_r7f2.runable",
       "supportsTablet": true
     },
     "splash": {
@@ -23,11 +23,11 @@
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "Finish the Song Remote",
+    "slug": "finish-the-song-remote",
     "version": "1.0.0",
     "scheme": "runable-release-hwih5dc",
-    "orientation": "portrait",
+    "orientation": "default",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "web": {
@@ -35,7 +35,14 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Record vocal takes to transfer to your Ableton session."
+        }
+      ],
+      "expo-font"
     ]
   }
 }

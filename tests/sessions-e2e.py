@@ -1,0 +1,48 @@
+from playwright.sync_api import sync_playwright
+import time,json
+with sync_playwright() as p:
+ b=p.chromium.launch(channel='chrome')
+ page=b.new_page(viewport={'width':1440,'height':1000})
+ errors=[]
+ page.on('pageerror',lambda e:errors.append(str(e)))
+ page.goto('http://localhost:4200/sessions',wait_until='networkidle')
+ page.screenshot(path='/tmp/sessions-auth.png',full_page=True)
+ page.get_by_text('New here? Create an account').click()
+ email=f'session-test-{int(time.time())}@example.com'
+ page.get_by_label('name',exact=True).fill('Upload test')
+ page.get_by_label('email',exact=True).fill(email)
+ page.get_by_label('password',exact=True).fill('Temporary-Test-Password-394!')
+ page.get_by_role('button',name='Create account',exact=True).click()
+ page.get_by_role('button',name='New session',exact=True).wait_for(timeout=25000)
+ page.get_by_role('button',name='New session',exact=True).click()
+ page.get_by_label('title',exact=True).fill('Storage & playback test')
+ page.get_by_label('bpm',exact=True).fill('120')
+ page.get_by_label('Choose session files').set_input_files(['/tmp/session-test.zip','/tmp/session-test.wav'])
+ page.get_by_role('button',name='Create & upload session').click()
+ page.get_by_role('heading',name='Storage & playback test').wait_for(timeout=60000)
+ # Wait for uploader to close rather than just the first created metadata row.
+ page.get_by_role('button',name='Close new session').wait_for(state='hidden',timeout=60000)
+ page.get_by_role('heading',name='Storage & playback test').click()
+ page.get_by_role('button',name='Preview session-test.wav').click()
+ page.locator('audio').wait_for(timeout=15000)
+ page.wait_for_function('document.querySelector("audio").readyState >= 1',timeout=30000)
+ print('audio_duration',page.locator('audio').evaluate('(a)=>a.duration'))
+ with page.expect_download(timeout=30000) as d:
+  page.get_by_role('button',name='Download session-test.zip').click()
+ d.value.save_as('/tmp/session-downloaded.zip')
+ page.screenshot(path='/tmp/sessions-library.png',full_page=True)
+ page.reload(wait_until='networkidle')
+ page.get_by_role('heading',name='Storage & playback test').wait_for(timeout=15000)
+ page.get_by_role('heading',name='Storage & playback test').click()
+ print('reload_files',page.get_by_text('session-test.zip',exact=True).count(), 'errors',errors)
+ page.get_by_role('button',name='New session',exact=True).click()
+ page.screenshot(path='/tmp/sessions-new.png',full_page=True)
+ page.get_by_role('button',name='Close new session').click()
+ # Capture signed-in mobile layout, then clean up only test-created session.
+ page.set_viewport_size({'width':390,'height':844})
+ page.screenshot(path='/tmp/sessions-mobile.png',full_page=True)
+ page.on('dialog',lambda dialog:dialog.accept())
+ page.get_by_role('button',name='Delete session',exact=True).click()
+ page.get_by_role('heading',name='Storage & playback test').wait_for(state='hidden',timeout=20000)
+ print('test_session_deleted',True)
+ b.close()

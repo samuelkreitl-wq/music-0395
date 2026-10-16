@@ -1,48 +1,8 @@
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { usePing } from "@/queries/ping";
-import { useColors } from "@/hooks/use-colors";
-
-export default function Index() {
-  const colors = useColors();
-  const ping = usePing();
-
-  return (
-    <SafeAreaView
-      edges={["top", "left", "right"]}
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
-      <Text style={[styles.title, { color: colors.foreground }]}>Welcome</Text>
-
-      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {ping.isLoading ? (
-          <ActivityIndicator color={colors.primary} />
-        ) : ping.isError ? (
-          <Text style={{ color: colors.destructive }}>API Error</Text>
-        ) : (
-          <Text style={{ color: colors.mutedForeground }}>API Status: {ping.data?.message}</Text>
-        )}
-      </View>
-    </SafeAreaView>
-  );
+import { useState } from 'react';
+import { Text, TextInput, View, Linking } from 'react-native';
+import { Screen, S, Button, C } from '../../components/remote-ui';
+import { remoteClient, useRemote } from '../../lib/remote';
+import Constants from 'expo-constants';
+export default function Connect(){const r=useRemote();const [code,setCode]=useState('');const [busy,setBusy]=useState(false);const [error,setError]=useState('');
+ return <Screen title={'Your studio.\nIn your hands.'} kicker="ABLETON LIVE 11 / 12"><Text style={S.sub}>A touch remote for the session running on your Mac. Mix, launch clips, play instruments and record without reaching for the mouse.</Text><View style={S.card}><Text style={S.body}>{r.token?'Paired with your Mac':'Pair with your Mac'}</Text><Text style={S.sub}>{r.token?'Keep the companion and Live open. Pairing resets when the app or server restarts.':'Start the Mac companion, enable AbletonOSC in Live, and enter the six-digit code shown on your Mac.'}</Text>{!r.token&&<><TextInput accessibilityLabel="Pairing code" value={code} onChangeText={v=>setCode(v.replace(/\D/g,'').slice(0,6))} keyboardType="number-pad" placeholder="000000" placeholderTextColor={C.muted} style={[S.input,{fontSize:30,letterSpacing:8,textAlign:'center'}]} /><View style={{marginTop:18}}><Button label={busy?'Pairing…':'Connect to Mac'} disabled={busy||code.length!==6} onPress={async()=>{setBusy(true);setError('');try{const result=await remoteClient.remote.pair({code});r.setToken(result.token ?? "");}catch(e){setError(e instanceof Error?e.message:'Pairing failed');}finally{setBusy(false);}}}/></View></>}{r.token&&<View style={{marginTop:18}}><Button label="Disconnect this device" secondary onPress={()=>r.setToken('')}/></View>}{(error||r.query.error)&&<Text style={S.error}>{error||r.query.error?.message}</Text>}</View><View style={S.card}><Text style={S.body}>Two ways to record vocals</Text><Text style={S.sub}>1. Arm your interface’s track and record in Live from the Mixer.\n2. Capture a phone/iPad microphone take in Takes, then transfer it to Sessions for import.</Text></View><Text style={[S.small,{marginTop:24}]}>This build uses a cloud relay. It is not a low-latency performance link or live audio stream. Mac/Live hardware validation is still needed. Logic and BandLab are planned, not connected.</Text><View style={{marginTop:18}}><Button label="Mac setup & companion" secondary onPress={()=>void Linking.openURL(`${Constants.expoConfig?.extra?.apiUrl}companion`)}/></View></Screen>;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 24,
-    gap: 16,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-  },
-  card: {
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-});
